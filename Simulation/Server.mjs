@@ -1,5 +1,5 @@
 import express from "./node_modules/express/index.js";
-import {freeUpCar, getAllCars, query, updateCar} from "./Database.mjs";
+import {freeUpCar, getAllCars, query, updateCar, insertCars} from "./Database.mjs";
 
 const app = express();
 const port = 4000;
@@ -40,6 +40,13 @@ app.get('/all-cars', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error while fetching car details." });
   }
+});
+
+app.get('/morecoffee-cars', async (req, res) => {
+  let minLatLng = {lat: 43.065256214849235,lng: -89.42522067687284};
+  let maxLatLng = {lat:43.076584597067416, lng: -89.38995313333349};
+  const cars = await insertCars(10, minLatLng, maxLatLng);
+  res.status(200).json(cars.map((car) => car.debugData())); // Send the car details as JSON response
 });
 
 //Endpoint to free up car after the ride is completed
